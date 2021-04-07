@@ -85,6 +85,8 @@ RUN /bin/bash -l -c "gem install bundler:2.1.4"
 USER gitpod
 
 RUN /bin/bash -l -c "bundle install"
+# Install fuser
+RUN sudo apt install -y libpq-dev psmisc lsof
 
 RUN /bin/bash -l -c "curl https://cli-assets.heroku.com/install.sh | sh"
 
