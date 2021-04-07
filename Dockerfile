@@ -67,25 +67,27 @@ RUN echo "rvm_gems_path=/home/gitpod/.rvm" > ~/.rvmrc
 
 USER gitpod
 # AppDev stuff
+# Install gems for editor extensions
 RUN /bin/bash -l -c "gem install htmlbeautifier"
 RUN /bin/bash -l -c "gem install rufo"
+
+# Install Google Chrome
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - 
+RUN sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+RUN sudo apt-get -y update
+RUN sudo apt-get -y install google-chrome-stable
+
 WORKDIR /base-rails
 COPY Gemfile /base-rails/Gemfile
 COPY Gemfile.lock /base-rails/Gemfile.lock
 RUN /bin/bash -l -c "gem install bundler:2.1.4"
-# USER root
-# RUN mkdir /workspace && chmod 755 /workspace
+
 USER gitpod
 
 RUN /bin/bash -l -c "bundle install"
 
 RUN /bin/bash -l -c "curl https://cli-assets.heroku.com/install.sh | sh"
 
-# RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-# RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-
-# # RUN sudo apt-get update && sudo apt-get install -y nodejs yarn postgresql-client
-# RUN sudo apt-get update && sudo apt-get install -y yarn
 USER gitpod
 RUN echo "rvm use 2.6.6" >> ~/.bashrc
 RUN echo "rvm_silence_path_mismatch_check_flag=1" >> ~/.rvmrc
